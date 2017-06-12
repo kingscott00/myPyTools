@@ -18,13 +18,13 @@ apps = []
 appIndex = 0
 
 class tool:
-	def __init__(self, argName, numArgs, help):
+	def __init__(self, argName, numArgs, helpMessage):
 		self.name = argName
 		self.numberOfReqArgs = numArgs
-		self.helpMsg = help
+		self.helpMsg = helpMessage
 
 	def displayHelp(self):
-		print(helpMsg)
+		print(self.helpMsg)
 
 	def isThereEnoughArgs(self, args):
 		if (len(args) < self.numberOfReqArgs):
@@ -36,8 +36,9 @@ class tool:
 def init():
 	print("")
 	apps.append(tool("countlines", 1, "first argument is the text file name"))
+	# go through .py files in folder, read top line comments, get out the arguments needed to instantiate the tools.
 
-def parseArgs():
+def parseArgsFromCommandPrompt():
 	global app
 	global appArgs 
 
@@ -46,14 +47,31 @@ def parseArgs():
 	del args[0] # remove the .py element
 	
 	# get the tool
-	app = args[0]
+	findAppIndex(args[0])
+	app = args[appIndex]
 	app = app.lower()
 
 	# get the args for the tool
 	del args[0]
 	appArgs = args
 
-def findApp(app):
+def parseArgs(args):
+	global app
+	global appArgs
+
+	# get the tool
+	findAppIndex(args[0])
+	if (appIndex > -1):
+		app = args[appIndex]
+		app = app.lower()	
+
+		# get the args for the tool
+		del args[0]
+		appArgs = args
+	else:
+		print('Cant find app')
+
+def findAppIndex(appName):
 	global appIndex
 	i = 0
 	
@@ -88,14 +106,33 @@ def execApp(app, args):
 	else:
 		print("tool doesn't exist")
 
+def displayApps():
+	global apps
+
+	print("Tools:")
+	
+	for a in apps:
+		print("   " + a.name)
 
 def run():
 	global app
 	global appArgs 
 	
 	init()
-	parseArgs() # get the app and arguments
-	execApp(app, appArgs) # execute the app
+	
+    # make interactive prompt here
+	while True:
+		n = input(">>")   
+		if n  == 'exit' :
+			break;
+		elif n == 'help':
+			displayApps()
+		else:
+			parseArgs(n.split(" ")) # get the app and arguments
+			execApp(app, appArgs) # execute the app
+
+	#parseArgs() # get the app and arguments
+	#execApp(app, appArgs) # execute the app
 
 if __name__ == "__main__":
 	run()

@@ -1,5 +1,7 @@
-# countlines
-# count the lines in a text file
+# tool: countlines
+# number of required args: 1
+# help: count the lines in a text file. /r/n First argument is the text file name.
+
 import os
 
 def run(args):
